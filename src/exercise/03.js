@@ -13,22 +13,28 @@ function Toggle({children}) {
  return (<ToggleContext.Provider value={{on, toggle}}>{children}</ToggleContext.Provider>)
 }
 
-function useContext() {
-  return React.useContext(ToggleContext)
+function useToggleContext() {
+  const context = React.useContext(ToggleContext)
+
+  if (context === undefined) {
+    throw new Error('ToggleContext must be wrapped in a Provider')
+  }
+
+  return context
 }
 
 function ToggleOn({children}) {
-  const {on} = useContext()
+  const {on} = useToggleContext()
   return on ? children : null
 }
 
 function ToggleOff({children}) {
-  const {on} = useContext()
+  const {on} = useToggleContext()
   return on ? null : children
 }
 
 function ToggleButton(props) {
-  const {on, toggle} = useContext()
+  const {on, toggle} = useToggleContext()
   return <Switch on={on} onClick={toggle} {...props} />
 }
 
@@ -38,7 +44,7 @@ function App() {
       <Toggle>
         <ToggleOn>The button is on</ToggleOn>
         <ToggleOff>The button is off</ToggleOff>
-        <div>
+      <div>
           <ToggleButton />
         </div>
       </Toggle>
